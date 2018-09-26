@@ -9,62 +9,75 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use AppBundle\Form\UserType;
 use AppBundle\Entity\User;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
-class SecurityController extends Controller
-{
+class SecurityController extends Controller{
+    
     /**
-     * @Route("/login", name="login")
+     * @Route("/login_register", name="login_register")
      */
-    public function login(AuthenticationUtils $authenticationUtils)
-    {
-        // replace this example code with whatever you need
+    public function DisplayLoginRegistrationPage(){
+        $user = new User();
+        $form = $this->createForm(UserType::class, $user);
+        return $this->render(
+            'login.html.twig',
+            array('form' => $form->createView(),'error' => '','last_username' => '')
+        );
+    }
+
+    /**
+     * @Route("/loginAction", name="loginAction")
+     */
+    public function login(AuthenticationUtils $authenticationUtils){
+        $user = new User();
+        $form = $this->createForm(UserType::class, $user);
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
-
-        return $this->render('register.html.twig', array(
+        return $this->render('login.html.twig', array(
             'last_username' => $lastUsername,
             'error'         => $error,
+            'form' => $form->createView()
         ));
     }
 
     /**
-     * @Route("/register", name="user_registration")
+     * @Route("/registerAction", name="registerAction")
      */
-    public function registerAction(Request $request, UserPasswordEncoderInterface $passwordEncoder)
-    {
-        // 1) build the form
+    public function registerAndLogin(Request $request, UserPasswordEncoderInterface $passwordEncoder){
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
-
-        // 2) handle the submit (will only happen on POST)
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
-            // 3) Encode the password (you could also do this via Doctrine listener)
             $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($password);
-
-            // 4) save the User!
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 
+            $token = new UsernamePasswordToken(
+                $user,
+                $password,
+                'main',
+                $user->getRoles()
+            );
+            $this->get('security.token_storage')->setToken($token);
+            $this->get('session')->set('_security_main',serialize($token));
+
             // ... do any other work - like sending them an email, etc
             // maybe set a "flash" success message for the user
-
+            $this->addFlash('success','You are successufully registered');
             return $this->redirectToRoute('welcome');
         }
-
         return $this->render(
-            'register.html.twig',
-            array('form' => $form->createView(),'error'  => "",'last_username' => '')
+            'login.html.twig',
+            array('form' => $form->createView(),'error' => '','last_username' => '')
         );
     }
 
      /**
      * @Route("/logout", name="logout")
      */
-    public function logout()
-    {
+    public function logout(){
     }
 }

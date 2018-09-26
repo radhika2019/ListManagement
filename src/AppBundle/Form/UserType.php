@@ -19,6 +19,7 @@ class UserType extends AbstractType
             ->add('email', EmailType::class)
             ->add('username', TextType::class)
             ->add('isActive', HiddenType::class, array('data' => '1'))
+            ->add('target', HiddenType::class, array('data' => 'register'))
             ->add('plainPassword', RepeatedType::class, array(
                 'type' => PasswordType::class,
                 'first_options'  => array('label' => 'Password'),

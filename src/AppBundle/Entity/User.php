@@ -28,6 +28,7 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="username", type="string", length=100, unique=true)
+     * @Assert\NotBlank(message="Please enter username")
      */
     private $username;
 
@@ -35,6 +36,7 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=100, unique=true)
+     * @Assert\NotBlank(message="Please enter email")
      */
     private $email;
 
@@ -58,6 +60,8 @@ class User implements UserInterface
      * @ORM\Column(name="isActive", type="boolean",options={"default" : 1})
      */
     private $isActive;
+
+    public $target;
 
     public function __construct()
     {
@@ -178,6 +182,7 @@ class User implements UserInterface
 
     public function eraseCredentials()
     {
+        $this->plainPassword = null;
     }
 
 
@@ -204,5 +209,23 @@ class User implements UserInterface
     {
         return $this->isActive;
     }
+
+   /* public function serialize()
+    {
+        return serialize([
+            $this->id,
+            $this->username,
+            $this->password,
+        ]);
+    }
+
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->username,
+            $this->password
+            ) = unserialize($serialized);
+    }*/
 }
 

@@ -22,8 +22,8 @@ security:
         main:
             anonymous: ~
             form_login:
-                login_path: login
-                check_path: login
+                login_path: loginAction
+                check_path: loginAction
             http_basic: ~
             pattern: ^/
             provider: db_provider
