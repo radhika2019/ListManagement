@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>{% block title %}Welcome Radhika{% endblock %}</title>
     {% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
      <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/main.css') }}" />
      <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
@@ -18,9 +19,8 @@
                         <a class="navbar-brand" href="#">WebSiteName</a>
                     </div>
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">Home</a></li>
                         {% if is_granted('ROLE_USER') %}
-                        <li><a href="#">Manage List</a></li>
+                        <li><a href="{{ path('manage_list') }}">Manage List</a></li>
                         {% endif %}
                     </ul>
                     <ul class="nav navbar-nav pull-right">

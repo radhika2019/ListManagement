@@ -29,6 +29,7 @@ security:
             provider: db_provider
             logout:
                 path: logout
+                target: login_register
             
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate

@@ -34,6 +34,7 @@ class SecurityController extends Controller{
         $form = $this->createForm(UserType::class, $user);
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
+
         return $this->render('login.html.twig', array(
             'last_username' => $lastUsername,
             'error'         => $error,
@@ -67,7 +68,7 @@ class SecurityController extends Controller{
             // ... do any other work - like sending them an email, etc
             // maybe set a "flash" success message for the user
             $this->addFlash('success','You are successufully registered');
-            return $this->redirectToRoute('welcome');
+            return $this->redirectToRoute('manage_list');
         }
         return $this->render(
             'login.html.twig',

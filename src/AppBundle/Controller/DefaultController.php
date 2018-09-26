@@ -19,12 +19,4 @@ class DefaultController extends Controller
         ]);
     }
     
-    /**
-     * @Route("/welcome", name="welcome")
-     */
-    public function home()
-    {
-        // replace this example code with whatever you need
-        return $this->render('welcome.html.twig');
-    }
 }

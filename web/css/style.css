@@ -5,3 +5,12 @@
     font-size: 15px;
     /* line-height: 0; */
 }
+.list-style {
+    padding: 0px;
+}
+.list-style  li {
+    padding: 6px 6px;
+}
+.margin-top20{
+	margin-top:20px;
+}

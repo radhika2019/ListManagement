@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+	<h1>List Management</h1>
+	<div class="row">	
+		<div class="col-md-12">
+			<a href="javascript:void(0);" data-toggle="modal" data-target="#ListModal">
+				<i class="fa fa-plus-circle fa-2x" aria-hidden="true"></i>Create New List
+			</a>
+		</div>
+		<div class="col-md-12 margin-top20">
+			<div class="col-md-3">
+				<div class="panel panel-default">
+					<div class="panel-heading">List Name<i class="fa fa-times pull-right" aria-hidden="true"></i>
+				</div>
+				<div class="panel-body list-style ">
+					<ol type="1">
+					  <li>First item</li>
+					  <li>Second item</li>
+					  <li>Third item</li>
+					</ol>
+				</div>
+				<div class="panel-footer">
+					<div class="text-right" data-toggle="modal" data-target="#itemModal">
+						Add Item &nbsp;<i class="fa fa-plus-square" aria-hidden="true"></i></div>
+					</div>
+				</div>					
+			</div>
+		</div>
+	</div>
+    <div id="ListModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add New List</h4>
+                </div>
+	                <div class="modal-body">
+	                <div class="msg">
+	               	</div>
+	                    <div class="form-group">
+	                        <label>Enter List Name</label>
+	                        <input type="text" name="name" id="name" class="form-control" placeholder="List Name">
+	                    </div>
+	                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="create_list">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="itemModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add New List</h4>
+                </div>
+                <form class="form-horizontal">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-md-3">Enter Item Name</label>
+                        <div class="col-md-9">
+                        	<input type="text" name="item_name" id="item_name" class="form-control" placeholder="Item Name">
+                        </div>	
+                    </div>
+                    <div class="form-group">
+                   		<div class="col-md-offset-3 col-md-9">
+	                    	<label><input type="radio" name="sort" value="top" checked>Place on Top of List</label><br>
+	                    	<label><input type="radio" name="sort" value="bottom">Place on Bottom of List</label>
+                    	</div>
+               		</div>
+                </form>
+                <div class="modal-footer">
+               		 <div class="col-md-offset-3 col-md-9">
+                    	<button type="button" class="btn btn-success" id="create_list">Save</button>
+                    	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+ {{ parent() }}
+ <script type="text/javascript">
+    $(document).ready(function(){
+        $("#create_list").on('click',function(){
+             var name    = $("#name").val();
+            $.ajax({
+                url:"{{ path('add_parent') }}",
+                data:{name:name},
+                type:"POST",
+                success:function(response){
+                	var resp = response;
+                	if(resp.output == 'error'){
+                		$('.msg').html("<div class='alert alert-danger'>"+ resp.message +"</div>");
+                	}
+                	if(resp.output == 'success'){
+                		location.reload();
+                	}                	
+                }
+            });
+        });
+        $("#add_item").on('click',function(){
+        	var item =  $("#item_name").val();
+        });
+    });
+</script> 
+{% endblock %}   

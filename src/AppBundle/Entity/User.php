@@ -28,7 +28,12 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="username", type="string", length=100, unique=true)
-     * @Assert\NotBlank(message="Please enter username")
+     * @Assert\NotBlank(message="Username cannot be blank")
+     * @Assert\Regex(
+     *     pattern="/\s/",
+     *     match=false,
+     *     message="Username cannot contain space"
+     * )
      */
     private $username;
 
@@ -36,13 +41,14 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=100, unique=true)
-     * @Assert\NotBlank(message="Please enter email")
+     * @Assert\NotBlank(message="Email cannot be blank")
+     * @Assert\Email(message="Please enter valid email")
      */
     private $email;
 
 
      /**
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="Password cannot be blank")
      * @Assert\Length(max=4096)
      */
     private $plainPassword;
