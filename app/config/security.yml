@@ -38,4 +38,4 @@ security:
             #form_login: ~
     access_control:
    # - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/welcome, roles: ROLE_USER }
+    - { path: ^/manage_list, roles: ROLE_USER } 

@@ -8,9 +8,10 @@
 			</a>
 		</div>
 		<div class="col-md-12 margin-top20">
+            {% for value in ListArr %}
 			<div class="col-md-3">
 				<div class="panel panel-default">
-					<div class="panel-heading">List Name<i class="fa fa-times pull-right" aria-hidden="true"></i>
+					<div class="panel-heading">{{ value.name }}<i class="fa fa-times pull-right" aria-hidden="true"></i>
 				</div>
 				<div class="panel-body list-style ">
 					<ol type="1">
@@ -20,11 +21,12 @@
 					</ol>
 				</div>
 				<div class="panel-footer">
-					<div class="text-right" data-toggle="modal" data-target="#itemModal">
+					<div class="text-right" onClick="AddItem({{ value.id }})">
 						Add Item &nbsp;<i class="fa fa-plus-square" aria-hidden="true"></i></div>
 					</div>
 				</div>					
 			</div>
+            {% endfor %}
 		</div>
 	</div>
     <div id="ListModal" class="modal fade" role="dialog">
@@ -74,10 +76,11 @@
 	                    	<label><input type="radio" name="sort" value="bottom">Place on Bottom of List</label>
                     	</div>
                		</div>
+                    <input type="hidden" id="parent_id" name="parent_id">
                 </form>
                 <div class="modal-footer">
                		 <div class="col-md-offset-3 col-md-9">
-                    	<button type="button" class="btn btn-success" id="create_list">Save</button>
+                    	<button type="button" class="btn btn-success" id="add_item">Save</button>
                     	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -91,7 +94,6 @@
     $(document).ready(function(){
         $("#create_list").on('click',function(){
              var name    = $("#list_name").val();
-             alert(name);
             $.ajax({
                 url:"{{ path('add_parent') }}",
                 data:{name:name},
@@ -109,7 +111,28 @@
         });
         $("#add_item").on('click',function(){
         	var item =  $("#item_name").val();
+            var sort = $("input[name='sort']:checked").val();
+            var parent_id = $("#parent_id").val();
+            $.ajax({
+                url:"{{ path('add_child') }}",
+                data:{item:item, sort:sort, parent_id:parent_id},
+                type:"POST",
+                success:function(response){
+                    var resp = response;
+                    if(resp.output == 'error'){
+                        $('.msg').html("<div class='alert alert-danger'>"+ resp.message +"</div>");
+                    }
+                    if(resp.output == 'success'){
+                        location.reload();
+                    }                   
+                }
+            });
         });
     });
+    function AddItem($parent_id){
+        $("#itemModal").modal('show');
+        var parent_id  = $parent_id;
+        $("#parent_id").val(parent_id);
+        }
 </script> 
 {% endblock %}   

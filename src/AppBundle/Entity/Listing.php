@@ -2,14 +2,14 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping as ORM ;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * List
  *
- * @ORM\Table(name="`list`")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\ListRepository")
+ * @ORM\Table(name="listing")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ListingRepository")
  */
 class Listing
 {
@@ -19,6 +19,7 @@ class Listing
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\OneToMany(targetEntity="Listing", mappedBy="parentId")
      */
     private $id;
 
@@ -33,7 +34,8 @@ class Listing
     /**
      * @var int
      *
-     * @ORM\Column(name="parent_id", type="integer")
+     * @ORM\ManyToOne(targetEntity="Listing", inversedBy="id")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
      */
     private $parentId;
 

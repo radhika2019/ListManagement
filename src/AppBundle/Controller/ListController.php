@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use AppBundle\Form\ListType;
+use Doctrine\ORM\EntityManager;
 
 
 class ListController extends Controller{
@@ -16,16 +17,21 @@ class ListController extends Controller{
      * @Route("/manage_list", name="manage_list")
      */
     public function ListFormAndItemForm(Request $request){
+        $current_user_id = $this->getUser()->getId();
         $list = new Listing();
         $form = $this->createForm(ListType::class, $list);
+        //$form->handleRequest($request);
 
-        $form->handleRequest($request);
+        $em = $this->getDoctrine()->getManager();
+        $result = $em->getRepository('AppBundle:Listing')
+            ->getList($current_user_id);
 
         return $this->render('manageList.html.twig', array(
-            'ListForm' => $form->createView()
+            'ListForm' => $form->createView(),
+            'ListArr'   => $result,
         ));
-       // return $this->render('manageList.html.twig');
     }
+
     /**
      * @Route("/add_parent", name="add_parent")
      */
@@ -61,5 +67,38 @@ class ListController extends Controller{
     		$response = array("output" => 'error','message' => "Something Wrong");
 			return new JsonResponse($response);
     	}
+    }
+    
+    /**
+     * @Route("/add_child", name="add_child")
+     */
+    public function addChild(Request $request,ValidatorInterface $validator){
+        $ItemName = $request->request->get('item');
+        $sort = $request->request->get('sort');
+        $parent_id = $request->request->get('parent_id');
+        $entityManager = $this->getDoctrine()->getManager();
+        $Item = new Listing();
+        $Item->setName($ItemName);
+        $Item->setParentId($parent_id);
+        $Item->setStatus(1);
+        $Item->setSortOrder($sort);
+        $Item->setColorCode("");
+        $Item->setUserID($this->getUser()->getId());
+
+        $errors = $validator->validate($Item);
+        if(count($errors) > 0) {
+            $errorsMsg = $errors[0]->getMessage();
+            $response = array("output" => 'error','message' => $errorsMsg);
+            return new JsonResponse($response);
+        }
+        $entityManager->persist($Item);
+        $entityManager->flush();
+        if($Item->getId()){
+          $response = array("output" => 'success','message' => "Record Inserted into table successfully");
+          return new JsonResponse($response);
+        }else{
+            $response = array("output" => 'error','message' => "Something Wrong");
+          return new JsonResponse($response);
+        }
     }
 }	
