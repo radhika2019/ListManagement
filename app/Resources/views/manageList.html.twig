@@ -35,12 +35,16 @@
                     <h4 class="modal-title">Add New List</h4>
                 </div>
 	                <div class="modal-body">
-	                <div class="msg">
-	               	</div>
-	                    <div class="form-group">
+    	                <div class="msg">
+    	               	</div>
+                        {% form_theme ListForm 'bootstrap_3_horizontal_layout.html.twig' %}
+                        {{ form_start(ListForm,{'attr' : {'novalidate': 'novalidate'}}) }}
+                        {{ form_row(ListForm.name,{attr : {'id':'list_name','placeholder' : 'List Name'}}) }}
+                        {{ form_end(ListForm) }}
+	                   <!-- <div class="form-group">
 	                        <label>Enter List Name</label>
-	                        <input type="text" name="name" id="name" class="form-control" placeholder="List Name">
-	                    </div>
+	                        <input type="text" name="name" id="list_name" class="form-control" placeholder="List Name">
+	                    </div> -->
 	                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" id="create_list">Save</button>
@@ -86,7 +90,8 @@
  <script type="text/javascript">
     $(document).ready(function(){
         $("#create_list").on('click',function(){
-             var name    = $("#name").val();
+             var name    = $("#list_name").val();
+             alert(name);
             $.ajax({
                 url:"{{ path('add_parent') }}",
                 data:{name:name},

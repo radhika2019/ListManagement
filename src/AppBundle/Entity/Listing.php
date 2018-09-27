@@ -60,6 +60,13 @@ class Listing
 
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="user_id", type="integer")
+     */
+    private $userID;
+
+    /**
      * Get id
      *
      * @return int
@@ -187,6 +194,30 @@ class Listing
     public function getColorCode()
     {
         return $this->colorCode;
+    }
+
+    /**
+     * Get userID
+     *
+     * @return int
+     */
+    public function getUserID()
+    {
+        return $this->userID;
+    }
+
+    /**
+     * Set userID
+     *
+     * @param integer $userID
+     *
+     * @return List
+     */
+    public function setUserID($userID)
+    {
+        $this->userID = $userID;
+
+        return $this;
     }
 }
 

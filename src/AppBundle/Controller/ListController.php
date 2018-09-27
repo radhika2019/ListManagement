@@ -8,13 +8,23 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use AppBundle\Form\ListType;
+
 
 class ListController extends Controller{
 	 /**
      * @Route("/manage_list", name="manage_list")
      */
-    public function ListManage(){
-        return $this->render('manageList.html.twig');
+    public function ListFormAndItemForm(Request $request){
+        $list = new Listing();
+        $form = $this->createForm(ListType::class, $list);
+
+        $form->handleRequest($request);
+
+        return $this->render('manageList.html.twig', array(
+            'ListForm' => $form->createView()
+        ));
+       // return $this->render('manageList.html.twig');
     }
     /**
      * @Route("/add_parent", name="add_parent")
@@ -30,6 +40,8 @@ class ListController extends Controller{
         	$list->setStatus(1);
         	$list->setSortOrder("");
         	$list->setColorCode("");
+            $list->setUserID($this->getUser()->getId());
+            //$list->setUserID($this->getUser()->getId());
         	$errors = $validator->validate($list);
         	if(count($errors) > 0) {
         	 	$errorsMsg = $errors[0]->getMessage();

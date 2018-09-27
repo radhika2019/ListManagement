@@ -13,7 +13,7 @@ class ListType extends AbstractType
         $builder
             ->add('name', TextType::class, array(
         	    'required'	    => true,
-        	    'label'	    => 'Name'
+        	    'label'	    => 'List Name'
             ));
 
     }
