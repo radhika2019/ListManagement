@@ -1,23 +1,24 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-	<h1>List Management</h1>
+	<h1>List Management</h1><hr>
 	<div class="row">	
 		<div class="col-md-12">
-			<a href="javascript:void(0);" data-toggle="modal" data-target="#ListModal">
-				<i class="fa fa-plus-circle fa-2x" aria-hidden="true"></i>Create New List
+			<a href="javascript:void(0)" data-toggle="modal" data-target="#ListModal">
+				<i class="fa fa-plus-circle fa-2x" aria-hidden="true">&nbsp;&nbsp;Create New List</i>
 			</a>
 		</div>
 		<div class="col-md-12 margin-top20">
             {% for value in ListArr %}
 			<div class="col-md-3">
 				<div class="panel panel-default">
-					<div class="panel-heading">{{ value.name }}<i class="fa fa-times pull-right" aria-hidden="true"></i>
+					<div class="panel-heading">{{ value.name }}<i class="fa fa-times pull-right" aria-hidden="true" onClick="remove_record({{ value.id }})"></i>
 				</div>
 				<div class="panel-body list-style ">
 					<ol type="1">
-					  <li>First item</li>
-					  <li>Second item</li>
-					  <li>Third item</li>
+                     {% for val in value.itemsArr %}
+					  <li>{{ val.name }}<i class="fa fa-window-close pull-right" aria-hidden="true" onClick="remove_record({{ val.id }})"></i></li>
+					 
+                    {% endfor %}
 					</ol>
 				</div>
 				<div class="panel-footer">
@@ -64,6 +65,8 @@
                 </div>
                 <form class="form-horizontal">
                 <div class="modal-body">
+                    <div class="msg_item">
+                    </div>
                     <div class="form-group">
                         <label class="col-md-3">Enter Item Name</label>
                         <div class="col-md-9">
@@ -113,14 +116,15 @@
         	var item =  $("#item_name").val();
             var sort = $("input[name='sort']:checked").val();
             var parent_id = $("#parent_id").val();
+            var path = "{{ path('add_child') }}";
             $.ajax({
-                url:"{{ path('add_child') }}",
-                data:{item:item, sort:sort, parent_id:parent_id},
+                url: path,
                 type:"POST",
+                data:{parent_id:parent_id,item:item,sort:sort},
                 success:function(response){
                     var resp = response;
                     if(resp.output == 'error'){
-                        $('.msg').html("<div class='alert alert-danger'>"+ resp.message +"</div>");
+                        $('.msg_item').html("<div class='alert alert-danger'>"+ resp.message +"</div>");
                     }
                     if(resp.output == 'success'){
                         location.reload();
@@ -128,11 +132,18 @@
                 }
             });
         });
+        $('[data-dismiss=modal]').on('click', function() {
+            $(':input').val('');
+        });
     });
     function AddItem($parent_id){
         $("#itemModal").modal('show');
         var parent_id  = $parent_id;
         $("#parent_id").val(parent_id);
-        }
+    }
+     function remove_record($del_id){
+        alert($del_id);
+    }
+
 </script> 
 {% endblock %}   

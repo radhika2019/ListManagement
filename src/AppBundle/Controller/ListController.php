@@ -20,12 +20,9 @@ class ListController extends Controller{
         $current_user_id = $this->getUser()->getId();
         $list = new Listing();
         $form = $this->createForm(ListType::class, $list);
-        //$form->handleRequest($request);
-
         $em = $this->getDoctrine()->getManager();
         $result = $em->getRepository('AppBundle:Listing')
             ->getList($current_user_id);
-
         return $this->render('manageList.html.twig', array(
             'ListForm' => $form->createView(),
             'ListArr'   => $result,
@@ -42,14 +39,12 @@ class ListController extends Controller{
     		$entityManager = $this->getDoctrine()->getManager();
     		$list = new Listing();
         	$list->setName($listName);
-        	$list->setParentId(0);
         	$list->setStatus(1);
         	$list->setSortOrder("");
         	$list->setColorCode("");
             $list->setUserID($this->getUser()->getId());
-            //$list->setUserID($this->getUser()->getId());
         	$errors = $validator->validate($list);
-        	if(count($errors) > 0) {
+        	if(count($errors) > 0){
         	 	$errorsMsg = $errors[0]->getMessage();
         	 	$response = array("output" => 'error','message' => $errorsMsg);
         		return new JsonResponse($response);
@@ -77,9 +72,11 @@ class ListController extends Controller{
         $sort = $request->request->get('sort');
         $parent_id = $request->request->get('parent_id');
         $entityManager = $this->getDoctrine()->getManager();
+        $getParentRecord = $entityManager->getRepository(Listing::class)->find($parent_id);
+      
         $Item = new Listing();
         $Item->setName($ItemName);
-        $Item->setParentId($parent_id);
+        $Item->setParent($getParentRecord);
         $Item->setStatus(1);
         $Item->setSortOrder($sort);
         $Item->setColorCode("");
@@ -100,5 +97,19 @@ class ListController extends Controller{
             $response = array("output" => 'error','message' => "Something Wrong");
           return new JsonResponse($response);
         }
+    }
+
+    /**
+     * @Route("/remove_parent", name="remove_parent")
+     */
+    public function deleteParent(Request $request){
+
+    }
+
+    /**
+     * @Route("/remove_child", name="remove_child")
+     */
+    public function deleteChild(Request $request){
+
     }
 }	

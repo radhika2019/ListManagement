@@ -19,25 +19,23 @@ class Listing
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\OneToMany(targetEntity="Listing", mappedBy="parentId")
      */
     private $id;
 
     /**
+     * @var int
+     *
+     * @ORM\ManyToOne(targetEntity="Listing")
+     */
+    private $parent;
+
+    /**
      * @var string
      *
-     * @Assert\NotBlank(message="List Name cannot be blank")
+     * @Assert\NotBlank(message="Field Name cannot be blank")
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
-
-    /**
-     * @var int
-     *
-     * @ORM\ManyToOne(targetEntity="Listing", inversedBy="id")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
-     */
-    private $parentId;
 
     /**
      * @var int
@@ -102,28 +100,17 @@ class Listing
         return $this->name;
     }
 
-    /**
-     * Set parentId
-     *
-     * @param integer $parentId
-     *
-     * @return List
-     */
-    public function setParentId($parentId)
+
+    public function setParent(Listing $parent)
     {
-        $this->parentId = $parentId;
+        $this->parent = $parent;
 
         return $this;
     }
 
-    /**
-     * Get parentId
-     *
-     * @return int
-     */
-    public function getParentId()
+    public function getParent()
     {
-        return $this->parentId;
+        return $this->parent;
     }
 
     /**
@@ -220,6 +207,10 @@ class Listing
         $this->userID = $userID;
 
         return $this;
+    }
+
+    public function __construct() {
+        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
     }
 }
 
