@@ -103,13 +103,41 @@ class ListController extends Controller{
      * @Route("/remove_parent", name="remove_parent")
      */
     public function deleteParent(Request $request){
-
+        $id = $request->request->get('del_id');
+        $entityManager = $this->getDoctrine()->getManager(); 
+        $parent = $entityManager->getRepository(Listing::class)->find($id);
+        if($parent){
+            $children = $entityManager->getRepository(Listing::class)->findBy([
+            'parent' => $id]);
+            if($children){
+                foreach ($children as $val) {
+                    $entityManager->remove($val);
+                }
+                $entityManager->flush();
+            }    
+            $entityManager->remove($parent);
+            $entityManager->flush();
+            $response = array("output" => 'success','message' => "Item Removed successfully"); 
+        }else{
+            $response = array("output" => 'success','message' => "No Item Found"); 
+        }
+        return new JsonResponse($response);
     }
 
     /**
      * @Route("/remove_child", name="remove_child")
      */
     public function deleteChild(Request $request){
-
+        $id = $request->request->get('del_id');
+        $entityManager = $this->getDoctrine()->getManager();
+        $item = $entityManager->getRepository(Listing::class)->find($id);
+         if (!$item) {
+            $response = array("output" => 'error','message' => "No Such Item Found");
+        }else{
+        $entityManager->remove($item);
+        $entityManager->flush();
+        $response = array("output" => 'success','message' => "Item Removed successfully"); 
+        }
+        return new JsonResponse($response);
     }
 }	
