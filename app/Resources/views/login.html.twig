@@ -4,7 +4,7 @@
         <div class="col-md-6">
             <h3>Sign Up</h3>
             {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
-            {{ form_start(form,{'action': path('registerAction'),'attr' : {'class': 'form-style','novalidate': 'novalidate'}}) }}
+            {{ form_start(form,{'action': path('confirmation'),'attr' : {'class': 'form-style','novalidate': 'novalidate'}}) }}
                 {{ form_row(form.username) }}
                 {{ form_row(form.email) }}
                 {{ form_row(form.plainPassword.first) }}
@@ -34,7 +34,6 @@
                         <input type="password" id="password" name="_password" class="form-control">
                     </div>    
                 </div>
-                <input type="hidden" name="target" value="login">
               <input type="hidden" name="_target_path" value="/manage_list">
                 <div class="form-group">
                     <div class="col-sm-offset-3 col-sm-9">

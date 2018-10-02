@@ -12,13 +12,18 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class SecurityController extends Controller{
     
     /**
-     * @Route("/login_register", name="login_register")
+     * @Route("/", name="login_register")
      */
-    public function DisplayLoginRegistrationPage(){
+    public function DisplayLoginRegistrationPage(AuthorizationCheckerInterface $authChecker){
+
+        if (true === $authChecker->isGranted('ROLE_USER')) {
+            return $this->redirectToRoute('manage_list');
+        }
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         return $this->render(
@@ -31,6 +36,7 @@ class SecurityController extends Controller{
      * @Route("/loginAction", name="loginAction")
      */
     public function login(AuthenticationUtils $authenticationUtils){
+
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -43,43 +49,62 @@ class SecurityController extends Controller{
         ));
     }
 
-    /**
-     * @Route("/registerAction", name="registerAction")
+   /**
+     * @Route("confirmation", name="confirmation")
      */
-    public function registerAndLogin(Request $request, UserPasswordEncoderInterface $passwordEncoder){
+    public function emailConfirmationAndRegistration(Request $request, \Swift_Mailer $mailer, UserPasswordEncoderInterface $passwordEncoder){
+
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        $data = $form->getData();
+        $email = $data->getEmail();
+        $username = $data->getUsername();
+        if($form->isSubmitted() && $form->isValid()) {
             $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($password);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $token = new UsernamePasswordToken(
-                $user,
-                $password,
-                'main',
-                $user->getRoles()
+            $message = (new \Swift_Message('Please verify your email address'))
+            ->setFrom('rchoudhary16108@gmail.com')
+            ->setTo($email)
+            ->setBody(
+                $this->renderView(
+                    'confirmation/confirmation.txt.twig',
+                    array('username' => $username)
+                ),
+                'text/html'
             );
-            $this->get('security.token_storage')->setToken($token);
-            $this->get('session')->set('_security_main',serialize($token));
-
-            // ... do any other work - like sending them an email, etc
-            // maybe set a "flash" success message for the user
-            $this->addFlash('success','You are successufully registered');
-            return $this->redirectToRoute('manage_list');
+            $mailer->send($message);
+            return $this->render('confirmation/message.html.twig',array('username' => $username,'email' => $email));
         }
+
         return $this->render(
             'login.html.twig',
             array('form' => $form->createView(),'error' => '','last_username' => '')
         );
     }
 
+    /**
+     * @Route("/activation/{username}", name="activation")
+     */
+    public function accountActivation($username){
+        
+       $entityManager = $this->getDoctrine()->getManager();
+       $user = $entityManager->getRepository(User::class)->findOneBy([
+            'username' => $username]);
+       $user->setIsActive(1);
+       $em = $this->getDoctrine()->getManager();
+       $entityManager->flush();
+       return $this->render('confirmation/welcome.html.twig');
+    }
+
      /**
      * @Route("/logout", name="logout")
      */
     public function logout(){
+
     }
 }

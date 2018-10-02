@@ -17,4 +17,8 @@
 .colorpicker.dropdown-menu.colorpicker-with-alpha.colorpicker-right.colorpicker-visible {
   z-index: 999999;
   left:653px;
+  min-width: 125px;
+}
+.colorpicker-alpha{
+  display: none !important;
 }

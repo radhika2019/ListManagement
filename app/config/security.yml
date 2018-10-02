@@ -24,12 +24,14 @@ security:
             form_login:
                 login_path: loginAction
                 check_path: loginAction
+                default_target_path: login_register
             http_basic: ~
             pattern: ^/
             provider: db_provider
             logout:
                 path: logout
                 target: login_register
+            logout_on_user_change: true
             
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate

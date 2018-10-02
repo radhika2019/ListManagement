@@ -16,8 +16,7 @@
 				<div class="panel-body list-style ">
 					<ol type="1">
                      {% for val in value.itemsArr %}
-					  <li>{{ val.name }}<i class="fa fa-window-close pull-right" aria-hidden="true" onClick="remove_child({{ val.id }})"></i></li>
-					 
+					  <li><span style="color: {{val.colorCode}}">{{ val.name }}</span><i class="fa fa-window-close pull-right" aria-hidden="true" onClick="remove_child({{ val.id }})"></i></li>
                     {% endfor %}
 					</ol>
 				</div>
@@ -50,7 +49,7 @@
 	                    </div> -->
 	                </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" id="create_list">Save</button>
+                    <button type="button" class="btn btn-success" id="create_list">Create</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -61,7 +60,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Add New List</h4>
+                    <h4 class="modal-title">Add New Item</h4>
                 </div>
                 <form class="form-horizontal" id="item_form" >
                     <div class="modal-body">
@@ -82,7 +81,7 @@
                         <div class="form-group">
                             <div class="col-md-offset-3 col-md-4">
                                    <div id="cp2" class="input-group colorpicker-component"> 
-                                      <input type="text" value="#00AABB" class="form-control" /> 
+                                      <input type="hidden" value="#000000" class="form-control" name="color" id="color"> 
                                       <span class="input-group-addon"><i></i></span>
                                     </div>
                             </div>
@@ -91,7 +90,7 @@
                     </div>   
                     <div class="modal-footer">
                    		 <div class="col-md-offset-3 col-md-9">
-                        	<button type="button" class="btn btn-success" id="add_item">Save</button>
+                        	<button type="button" class="btn btn-success" id="add_item">Create</button>
                         	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                     </div>
@@ -105,12 +104,13 @@
  <script type="text/javascript">
  $('#cp2').colorpicker();
     $(document).ready(function(){
-
         $("#create_list").on('click',function(){
             $("#list_form").submit();
+            $("#list_form")[0].reset();
         });
         $("#add_item").on('click',function(){
             $("#item_form").submit();
+            $("#item_form")[0].reset();
         });
         $("#list_form").submit(function(e) {
         e.preventDefault();
@@ -135,11 +135,12 @@
         	var item =  $("#item_name").val();
             var sort = $("input[name='sort']:checked").val();
             var parent_id = $("#parent_id").val();
+            var color = $("#color").val();
             var path = "{{ path('add_child') }}";
             $.ajax({
                 url: path,
                 type:"POST",
-                data:{parent_id:parent_id,item:item,sort:sort},
+                data:{parent_id:parent_id, item:item, sort:sort, color:color},
                 success:function(response){
                     var resp = response;
                     if(resp.output == 'error'){
@@ -152,16 +153,13 @@
                 }
             });
         });
-        $('[data-dismiss=modal]').on('click', function() {
-            $(':input').val('');
-        });
     });
     function AddItem($parent_id){
         $("#itemModal").modal('show');
         var parent_id  = $parent_id;
         $("#parent_id").val(parent_id);
     }
-    function remove_record($del_id){
+    function remove_child($del_id){
         var del_id = $del_id;
          $.ajax({
                 url:"{{ path('remove_child') }}",

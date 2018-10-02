@@ -3,7 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -15,7 +15,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @UniqueEntity("email",message="This email is already registered.Please Try Other")
  * @UniqueEntity("username",message="This username is already registered.Please Try Other")
  */
-class User implements UserInterface
+class User implements AdvancedUserInterface
 {
     /**
      * @var int
@@ -75,6 +75,7 @@ class User implements UserInterface
     {
       //  $this->isActive = true;
           $this->roles = array('ROLE_USER');
+           $this->isActive = true;
         // may not be needed, see section on salt below
         // $this->salt = md5(uniqid('', true));
     }
@@ -218,12 +219,33 @@ class User implements UserInterface
         return $this->isActive;
     }
 
-   /* public function serialize()
+    public function isAccountNonExpired()
+    {
+        return true;
+    }
+
+    public function isAccountNonLocked()
+    {
+        return true;
+    }
+
+    public function isCredentialsNonExpired()
+    {
+        return true;
+    }
+
+    public function isEnabled()
+    {
+        return $this->isActive;
+    }
+
+   public function serialize()
     {
         return serialize([
             $this->id,
             $this->username,
             $this->password,
+            $this->isActive,
         ]);
     }
 
@@ -232,8 +254,9 @@ class User implements UserInterface
         list (
             $this->id,
             $this->username,
-            $this->password
+            $this->password,
+            $this->isActive,
             ) = unserialize($serialized);
-    }*/
+    }
 }
 

@@ -31,7 +31,7 @@ class ListingRepository extends EntityRepository{
             $childrens = array(); 
             $main = array();
             $childRecord = $this->createQueryBuilder('Listing')
-                ->select('Listing.name','Listing.id')
+                ->select('Listing.name','Listing.id','Listing.colorCode')
                 ->where('Listing.status = 1','Listing.parent = :parent')
                 ->setParameter('parent', $value['id'])
                 ->orderby('Listing.sortOrder','DESC')

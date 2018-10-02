@@ -18,7 +18,7 @@ class UserType extends AbstractType
         $builder
             ->add('email', EmailType::class)
             ->add('username', TextType::class)
-            ->add('isActive', HiddenType::class, array('data' => '1'))
+            ->add('isActive', HiddenType::class, array('data' => '0'))
             ->add('target', HiddenType::class, array('data' => 'register'))
             ->add('plainPassword', RepeatedType::class, array(
                 'type' => PasswordType::class,

@@ -10,13 +10,17 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use AppBundle\Form\ListType;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+
 
 
 class ListController extends Controller{
+
 	 /**
      * @Route("/manage_list", name="manage_list")
      */
     public function ListFormAndItemForm(Request $request){
+
         $current_user_id = $this->getUser()->getId();
         $list = new Listing();
         $form = $this->createForm(ListType::class, $list);
@@ -68,9 +72,11 @@ class ListController extends Controller{
      * @Route("/add_child", name="add_child")
      */
     public function addChild(Request $request,ValidatorInterface $validator){
+
         $ItemName = $request->request->get('item');
         $sort = $request->request->get('sort');
         $parent_id = $request->request->get('parent_id');
+        $color = $request->request->get('color');
         $entityManager = $this->getDoctrine()->getManager();
         $getParentRecord = $entityManager->getRepository(Listing::class)->find($parent_id);
       
@@ -79,7 +85,7 @@ class ListController extends Controller{
         $Item->setParent($getParentRecord);
         $Item->setStatus(1);
         $Item->setSortOrder($sort);
-        $Item->setColorCode("");
+        $Item->setColorCode($color);
         $Item->setUserID($this->getUser()->getId());
 
         $errors = $validator->validate($Item);
@@ -103,6 +109,7 @@ class ListController extends Controller{
      * @Route("/remove_parent", name="remove_parent")
      */
     public function deleteParent(Request $request){
+        
         $id = $request->request->get('del_id');
         $entityManager = $this->getDoctrine()->getManager(); 
         $parent = $entityManager->getRepository(Listing::class)->find($id);
@@ -128,6 +135,7 @@ class ListController extends Controller{
      * @Route("/remove_child", name="remove_child")
      */
     public function deleteChild(Request $request){
+
         $id = $request->request->get('del_id');
         $entityManager = $this->getDoctrine()->getManager();
         $item = $entityManager->getRepository(Listing::class)->find($id);
