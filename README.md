@@ -12,8 +12,11 @@ Step 2. Go to the project directory. Install the comopser using below cmd:-
 It will ask for the parameters for Database and Mailing details.For Emails you can use the below account details for quick testing.
 
 mailer_host (127.0.0.1): smtp.gmail.com
+
 mailer_user (null): rchoudhary16108@gmail.com
+
 mailer_password (null): xkidlzmaawrxqmpv
+
 secret (ThisTokenIsNotSoSecretChangeIt):
 
 
