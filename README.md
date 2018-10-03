@@ -17,8 +17,6 @@ mailer_user (null): rchoudhary16108@gmail.com
 
 mailer_password (null): xkidlzmaawrxqmpv
 
-secret (ThisTokenIsNotSoSecretChangeIt):
-
 
 Step 3.Create the Database using below command:-
 
