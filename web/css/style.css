@@ -22,3 +22,7 @@
 .colorpicker-alpha{
   display: none !important;
 }
+.input-group-addon {
+  width: 39px;
+  border-radius: 0px;
+}
