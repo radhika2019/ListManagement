@@ -1,6 +1,10 @@
 Steps of installation
 ========================
 
+Clone Project
+
+git clone https://github.com/radhika2019/ListManagement.git
+
 Step 1. Pull the project from Git.Go to the project directory. Install the comopser using below cmd:-
 
       - composer install
