@@ -17,7 +17,7 @@ mailer_host (127.0.0.1): smtp.gmail.com
 
 mailer_user (null): rchoudhary16108@gmail.com
 
-mailer_password (null): xkidlzmaawrxqmpv
+mailer_password (null): #xkidlzmaawrxqmpv#
 
 
 Step 2.Create the Database using below command:-
